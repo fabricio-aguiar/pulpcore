@@ -2,7 +2,7 @@
 """Constants for pulpcore API tests that require the use of a plugin."""
 from urllib.parse import urljoin
 
-from pulp_smash.constants import PULP_FIXTURES_BASE_URL
+from pulp_smash import config
 from pulp_smash.pulp3.constants import (
     BASE_DISTRIBUTION_PATH,
     BASE_PUBLICATION_PATH,
@@ -10,6 +10,8 @@ from pulp_smash.pulp3.constants import (
     BASE_REPO_PATH,
     BASE_CONTENT_PATH,
 )
+
+PULP_FIXTURES_BASE_URL = urljoin(config.get_config().get_base_url(role="api"), "/static/fixtures/")
 
 FILE_CONTENT_NAME = 'file.file'
 

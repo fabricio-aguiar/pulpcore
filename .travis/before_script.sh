@@ -23,6 +23,15 @@ if [[ -f $PRE_BEFORE_SCRIPT ]]; then
     $PRE_BEFORE_SCRIPT
 fi
 
+cd ..
+git clone --depth=1 https://github.com/PulpQE/pulp-fixtures.git
+cd pulp-fixtures
+for i in $(cat Makefile | grep "^fixtures" | grep -- 'file\|rpm' | sed "s/://g"); do
+    make "$i"
+done
+sudo kubectl cp ./fixtures $PULP_API_POD:/var/lib/pulp/static/
+cd ../pulpcore
+
 mkdir -p ~/.config/pulp_smash
 
 if [[ -f .travis/pulp-smash-config.json ]]; then
@@ -39,6 +48,11 @@ if [[ "$TEST" == 'pulp' || "$TEST" == 'performance' ]]; then
     # Many functional tests require these
     $CMD_PREFIX dnf install -yq lsof which dnf-plugins-core
 fi
+
+sudo kubectl delete pod $PULP_API_POD
+cd $TRAVIS_BUILD_DIR/../pulp-operator
+.travis/pulp-operator-check-and-wait.sh
+cd $TRAVIS_BUILD_DIR/../pulpcore
 
 if [[ -f $POST_BEFORE_SCRIPT ]]; then
     $POST_BEFORE_SCRIPT
