@@ -12,6 +12,15 @@ set -euv
 export PRE_BEFORE_SCRIPT=$TRAVIS_BUILD_DIR/.travis/pre_before_script.sh
 export POST_BEFORE_SCRIPT=$TRAVIS_BUILD_DIR/.travis/post_before_script.sh
 
+
+if [ -r /usr/lib/libeatmydata/libeatmydata.so ]; then
+  # much faster package installation
+  export LD_PRELOAD='/usr/lib/libeatmydata/libeatmydata.so'
+elif [ -r /usr/lib/*/libeatmydata.so ]; then
+  # much faster package installation
+  export export LD_PRELOAD='/usr/lib/x86_64-linux-gnu/libeatmydata.so'
+fi
+
 # Aliases for running commands in the pulp-api container.
 export PULP_API_POD=$(sudo kubectl get pods | grep -E -o "pulp-api-(\w+)-(\w+)")
 # Run a command

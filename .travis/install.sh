@@ -9,6 +9,15 @@
 
 set -euv
 
+
+if [ -r /usr/lib/libeatmydata/libeatmydata.so ]; then
+  # much faster package installation
+  export LD_PRELOAD='/usr/lib/libeatmydata/libeatmydata.so'
+elif [ -r /usr/lib/*/libeatmydata.so ]; then
+  # much faster package installation
+  export export LD_PRELOAD='/usr/lib/x86_64-linux-gnu/libeatmydata.so'
+fi
+
 if [ "$TEST" = 'docs' ]; then
   pip install psycopg2-binary
   pip install -r doc_requirements.txt
