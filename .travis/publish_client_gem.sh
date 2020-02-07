@@ -13,8 +13,14 @@ echo "---
 :rubygems_api_key: $RUBYGEMS_API_KEY" > ~/.gem/credentials
 sudo chmod 600 ~/.gem/credentials
 
+services=$(sudo kubectl get services)
+API_PORT=$( echo "$services" | awk -F '[ :/]+' '/pulp-api/{print $6}')
+pods=$(sudo kubectl get pods -o wide)
+API_NODE=$( echo "$pods" | awk -F '[ :/]+' '/pulp-api/{print $8}')
+echo "http://$API_NODE:$API_PORT/pulp/api/v3/status/"
+
 cd $TRAVIS_BUILD_DIR
-export REPORTED_VERSION=$(http http://$(hostname):24817/pulp/api/v3/status/ | jq --arg plugin pulpcore -r '.versions[] | select(.component == $plugin) | .version')
+export REPORTED_VERSION=$(http http://$API_NODE:$API_PORT/pulp/api/v3/status/ | jq --arg plugin pulpcore -r '.versions[] | select(.component == $plugin) | .version')
 export DESCRIPTION="$(git describe --all --exact-match `git rev-parse HEAD`)"
 if [[ $DESCRIPTION == 'tags/'$REPORTED_VERSION ]]; then
   export VERSION=${REPORTED_VERSION}
