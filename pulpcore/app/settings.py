@@ -28,7 +28,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "debug_toolbar",
     "import_export",
     # third-party
     "django_filters",
@@ -96,6 +97,7 @@ for app in OPTIONAL_APPS:
         INSTALLED_APPS.append(app)
 
 MIDDLEWARE = [
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django_guid.middleware.GuidMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
@@ -106,6 +108,12 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django_currentuser.middleware.ThreadLocalUserMiddleware",
+]
+
+INTERNAL_IPS = [
+    # ...
+    '127.0.0.1',
+    # ...
 ]
 
 AUTHENTICATION_BACKENDS = [

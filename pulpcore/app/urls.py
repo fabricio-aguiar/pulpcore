@@ -1,6 +1,6 @@
 """pulp URL Configuration"""
 import logging
-
+import debug_toolbar
 from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib import admin
@@ -120,6 +120,7 @@ for viewset in sorted_by_depth:
 root_router = routers.DefaultRouter()
 
 urlpatterns = [
+    path("__debug__/", include(debug_toolbar.urls)),
     url(r"^{api_root}repair/".format(api_root=API_ROOT), RepairView.as_view()),
     url(r"^{api_root}status/".format(api_root=API_ROOT), StatusView.as_view()),
     url(r"^{api_root}orphans/".format(api_root=API_ROOT), OrphansView.as_view()),
